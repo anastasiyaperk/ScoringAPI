@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import abc
-import json
 import datetime
-import logging
 import hashlib
-import uuid
-from optparse import OptionParser
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import json
+import logging
+from optparse import OptionParser
 from typing import List
+import uuid
 from weakref import WeakKeyDictionary
-from scoring import get_score, get_interests
+
+from scoring import get_interests, get_score
 
 SALT = "Otus"
 ADMIN_LOGIN = "admin"
