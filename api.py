@@ -236,6 +236,7 @@ def method_handler(request, ctx, store):
     try:
         method_request = MethodRequest(**body)
     except ValueError as ex:
+        logging.exception(ex, exc_info=True)
         return str(ex), INVALID_REQUEST
 
     if not check_auth(method_request):
@@ -244,6 +245,7 @@ def method_handler(request, ctx, store):
     try:
         response, code = handler_functions[method_request.method](method_request, ctx, store)
     except ValueError as ex:
+        logging.exception(ex, exc_info=True)
         return str(ex), INVALID_REQUEST
 
     return response, code
