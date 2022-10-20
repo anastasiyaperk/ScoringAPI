@@ -28,7 +28,7 @@ ERRORS = {
     NOT_FOUND: "Not Found",
     INVALID_REQUEST: "Invalid Request",
     INTERNAL_ERROR: "Internal Server Error",
-}
+    }
 UNKNOWN = 0
 MALE = 1
 FEMALE = 2
@@ -36,7 +36,7 @@ GENDERS = {
     UNKNOWN: "unknown",
     MALE: "male",
     FEMALE: "female",
-}
+    }
 NoneType = type(None)
 
 
@@ -148,7 +148,9 @@ class OnlineScoreRequest:
 
     def __init__(self, first_name: str = UNSET(), last_name: str = UNSET(), email: str = UNSET(),
                  phone: str = UNSET(), birthday: str = UNSET(), gender: str = UNSET()):
-        if not (max(map(bool, [phone and email, first_name and last_name, gender and birthday]))):
+
+        valid_pairs = [(phone, email), (first_name, last_name), (gender, birthday)]
+        if not any(map(lambda pair: not isinstance(pair[0], UNSET) and not isinstance(pair[1], UNSET), valid_pairs)):
             raise ValueError("Must be at least one pair of 'phone-email', 'first_name-last_name' or 'gender-birthday'")
         self.first_name = first_name
         self.last_name = last_name
@@ -159,7 +161,8 @@ class OnlineScoreRequest:
 
     def to_dict(self, exclude_none: bool = False):
         args_ = {'first_name': self.first_name, 'last_name': self.last_name, 'email': self.email, 'phone': self.phone,
-                 'birthday': self.birthday, 'gender': self.gender}
+                 'birthday': self.birthday, 'gender': self.gender
+                 }
         if exclude_none:
             args_ = {item: value for item, value in args_.items() if value is not None}
         return args_
@@ -224,7 +227,7 @@ def method_handler(request, ctx, store):
     handler_functions = {
         "online_score": online_score,
         "clients_interests": clients_interests
-    }
+        }
 
     body = request.get("body")
     if not body:
@@ -249,7 +252,7 @@ def method_handler(request, ctx, store):
 class MainHTTPHandler(BaseHTTPRequestHandler):
     router = {
         "method": method_handler
-    }
+        }
     store = None
 
     def get_request_id(self, headers):
