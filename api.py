@@ -10,8 +10,8 @@ from optparse import OptionParser
 from typing import List
 import uuid
 from weakref import WeakKeyDictionary
-
-from scoring import get_interests, get_score
+from scoring import get_score, get_interests
+from store import MemcacheClient
 
 SALT = "Otus"
 ADMIN_LOGIN = "admin"
@@ -117,7 +117,7 @@ class GenderField(BaseField):
     def __set__(self, instance, value):
         super().__set__(instance, value)
         value = self.data[instance]
-        if not isinstance(value, NoneType) and value not in [0, 1, 2]:
+        if not isinstance(value, NoneType) and (value not in [0, 1, 2] or not isinstance(value, int)):
             raise ValueError(f"field '{self.name}' must be integer with value 0, 1 or 2")
 
 
@@ -255,7 +255,7 @@ class MainHTTPHandler(BaseHTTPRequestHandler):
     router = {
         "method": method_handler
         }
-    store = None
+    store = MemcacheClient()
 
     def get_request_id(self, headers):
         return headers.get('HTTP_X_REQUEST_ID', uuid.uuid4().hex)
